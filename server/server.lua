@@ -4,11 +4,14 @@ local catchlootmax = Config.Catchlootmax
 
 local processlootmin = Config.Processlootmin
 local processlootmax = Config.Processlootmax
+
 local frogcooked = Config.Cookedfrogvalue
 
 
 local removefroginv = Config.Removefrog
 local removefrogpreprocessed = Config.Removepreprocessed
+local removefrogcookedfrog = Config.RemoveCookedFrog
+local finishfrogdrug = Config.getfinishfrogdrug
 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
@@ -55,14 +58,14 @@ RegisterServerEvent('frog:removefrog')
 AddEventHandler('frog:removefrog', function()
   local xPlayer = ESX.GetPlayerFromId(source)
   
-  xPlayer.removeInventoryItem(frog_pet, removefroginv)
+  xPlayer.removeInventoryItem('frog_pet', removefroginv)
   
 end)
 
 RegisterServerEvent('frog:removepreprocessed')
 AddEventHandler('frog:removepreprocessed', function()
   local xPlayer = ESX.GetPlayerFromId(source)
-  xPlayer.removeInventoryItem(frog_preprocessed, removefrogpreprocessed)
+  xPlayer.removeInventoryItem('frog_preprocessed', removefrogpreprocessed)
   
 end)
 
@@ -70,13 +73,30 @@ RegisterServerEvent('frog:getcookedfrog')
 AddEventHandler('frog:getcookedfrog', function()
   local xPlayer = ESX.GetPlayerFromId(source)
   
-  xPlayer.addInventoryItem(frog_cooked, frogcooked)
+  xPlayer.addInventoryItem('frog_cooked', frogcooked)
 end)
 
 
---RegisterServerEvent('frog:check')
---AddEventHandler('frog:check', function(_)
---    local player = ESX.GetPlayerFromId(source)
---
---    end
---end)
+RegisterServerEvent('frog:removecookedfrog')
+AddEventHandler('frog:removecookedfrog', function()
+  local xPlayer = ESX.GetPlayerFromId(source)
+  xPlayer.removeInventoryItem('frog_cooked', removefrogcookedfrog)
+  
+end)
+
+RegisterServerEvent('frog:getfinishfrogdrug')
+AddEventHandler('frog:getfinishfrogdrug', function()
+  local xPlayer = ESX.GetPlayerFromId(source)
+  
+  xPlayer.addInventoryItem('frog_drug', finishfrogdrug)
+end)
+
+
+ESX.RegisterUsableItem('frog_drug', function(source)
+        
+    local _source = source
+local xPlayer = ESX.GetPlayerFromId(_source)
+xPlayer.removeInventoryItem('frog_drug', 1)
+
+TriggerClientEvent('frog:EatFinishFrogDrug', source)
+end)
