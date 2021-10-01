@@ -1,7 +1,8 @@
 Locales['de'] = {
-  ['start_farming'] = 'Drücke ~INPUT_CONTEXT~ um Die Frösche zu Fangen',
+  ['start_farming'] = 'Drücke ~INPUT_CONTEXT~ um Kröten zu Fangen',
+  ['start_process'] = 'Drücke ~INPUT_CONTEXT~ um Die Kröte zu ~b~Sezieren aber sei Vorsichtig!',
+  ['start_cooking'] = 'Drücke ~INPUT_CONTEXT~ um Das ~b~Kröten Hautsekret zu Extrahieren',
+  ['getdrugfrog'] =   'Drücke ~INPUT_CONTEXT~ und mach dir einen ~b~Bufotenin Drink',
   ['farming_noluck'] = '~r~Der Frosch war Feucht und Glatt und ist Dir aus der Hand Geflutscht :(',
-  ['start_process'] = 'Drücke ~INPUT_CONTEXT~ um Die Frösche zu ~b~Verarbeiten',
-  ['start_cooking'] = 'Drücke ~INPUT_CONTEXT~ um Die Verarbeiteten Frösche ~b~abzukochen',
-  ['getdrugfrog'] = 'Drücke ~INPUT_CONTEXT~ und mach dir nen paar ~b~LSD Frösche',
+  ['pet_process'] = 'Verarbeite Den Frosch',
   }

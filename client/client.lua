@@ -7,6 +7,9 @@ local isProcessing = false
 local cooking_pot = false
 
 
+
+
+
 AddEventHandler('playerSpawned', function()
     Citizen.CreateThread(function()
         while ESX == nil do
@@ -87,23 +90,44 @@ Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
 
-        local playerCoords = GetEntityCoords(PlayerPedId(), true)
+        local playerCoords = GetEntityCoords(PlayerPedId(-1), true)
 		local playerPos = GetEntityCoords(player)
 		local targetPos = Config.FrogFarm.Routes[1].FrogPickup[1]
-		
-		
 
-		DrawMarker(24, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 13, 232, 255, 155, 0, 0, 2, 0, 0, 0, 0)
-        if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < 3.0 then
+		
+        if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToDraw then
+		DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 232, 155, 155, 0, 0, 2, 0, 0, 0, 0)
             if IsControlPressed(0, 51) and not isPickingUp then
+			
 					isPickingUp = true
-					
-
-					TaskStartScenarioInPlace(playerPed, Config.Animation, 0, false)
-					
-						Citizen.Wait(Config.PickupTime)
-						TriggerServerEvent("frog:Catchloot")
-						ClearPedTasks(playerPed)
+						
+						TriggerEvent("mythic_progbar:client:progress", {
+                         name = "test",
+                         duration = Config.PickupTime,
+                         label = 'Du versuchst Frösche zu Fangen..',
+                         useWhileDead = false,
+                         canCancel = true,
+                         controlDisables = {
+                             disableMovement = true,
+                             disableCarMovement = true,
+                             disableMouse = false,
+                             disableCombat = true,
+                         },
+                         animation = {
+                             animDict = "amb@world_human_bum_wash@male@low@idle_a",
+                             anim = "idle_c",
+                         },
+                         prop = {
+                             model = "prop_buck_spade_03",
+							 coords = { x = 0.2, y = -0.13, z = 0.1 },
+							 rotation = { x = -150.0, y = 15.0, z = -18.0 },
+                         }
+                     }, function(status)
+                         if not status then
+                            TriggerServerEvent("frog:Catchloot")
+							isPickingUp = false
+                         end
+                     end)
             else
 			isPickingUp = false
 			ShowPedHelpDialog(_U('start_farming'))
@@ -122,20 +146,41 @@ Citizen.CreateThread(function()
 		local playerPos = GetEntityCoords(player)
 		local targetPos = Config.FrogFarm.Routes[1].FrogProcess[1]
 		
-		DrawMarker(24, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 13, 232, 255, 155, 0, 0, 2, 0, 0, 0, 0)
-        if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < 1.5 then
+		
+        if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToDraw then
+		DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 132, 155, 155, 0, 0, 2, 0, 0, 0, 0)
             if IsControlPressed(0, 51) and not isProcessing then
 					isProcessing = true
 					
 					
-					TaskStartScenarioInPlace(playerPed, Config.ProcessAnimation, 0, false)
-					Citizen.Wait(Config.PickupTime)
-					TriggerServerEvent("frog:removefrog")
-					TriggerServerEvent("frog:Processloot")
-						
-						ESX.Game.DeleteObject(nearbyObject)
-						ClearPedTasks(playerPed)
-							   
+	                 	TriggerEvent("mythic_progbar:client:progress", {
+                         name = "unique_action_name",
+                         duration = Config.PickupTime,
+                         label = 'Du Verarbeitest gerade einen Frosch',
+                         useWhileDead = false,
+                         canCancel = true,
+                         controlDisables = {
+                             disableMovement = true,
+                             disableCarMovement = true,
+                             disableMouse = false,
+                             disableCombat = true,
+                         },
+                         animation = {
+                             animDict = "creatures@rottweiler@tricks@",
+                             anim = "petting_franklin",
+                         },
+                         prop = {
+                             model = "prop_cs_bowie_knife",
+							 coords = { x = 0.06, y = 0.010, z = 0.023 },
+							 rotation = { x = -80.0, y = 15.0, z = -18.0 },
+                         }
+                     }, function(status)
+                         if not status then
+                             TriggerServerEvent("frog:removefrog")
+							 TriggerServerEvent("frog:Processloot")
+                         end
+                     end)
+				   
             else
 			isProcessing = false
 			ShowPedHelpDialog(_U('start_process'))
@@ -153,22 +198,39 @@ Citizen.CreateThread(function()
         local playerCoords = GetEntityCoords(PlayerPedId(source), true)
 		local playerPos = GetEntityCoords(player)
 		local targetPos = Config.FrogFarm.Routes[1].FrogCook1[1]
-
 		
-		DrawMarker(24, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 13, 232, 255, 155, 0, 0, 2, 0, 0, 0, 0)
-        if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < 1.5 then
+        if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToDraw then
+		DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 112, 115, 155, 0, 0, 2, 0, 0, 0, 0)
             if IsControlPressed(0, 51) and not isProcessing and cooking_pot then
 					isProcessing = true
 					
-					TaskStartScenarioInPlace(playerPed, Config.CookingAnimation, 0, false)
-					
-					Citizen.Wait(Config.PickupTime)
-					TriggerServerEvent("frog:removepreprocessed")
-					Citizen.Wait(0)
-					TriggerServerEvent("frog:getcookedfrog")
-
-						ClearPedTasks(playerPed)
-							   
+					TriggerEvent("mythic_progbar:client:progress", {
+                         name = "unique_action_name",
+                         duration = Config.PickupTime,
+                         label = 'Du Verarbeitest gerade einen Frosch',
+                         useWhileDead = false,
+                         canCancel = true,
+                         controlDisables = {
+                             disableMovement = true,
+                             disableCarMovement = true,
+                             disableMouse = false,
+                             disableCombat = true,
+                         },
+                         animation = {
+                            animDict = "amb@world_human_bum_wash@male@low@idle_a",
+                             anim = "idle_a",
+                         },
+                         prop = {
+                             model = "prop_kitch_pot_huge",
+							 coords = { x = 0.2, y = -0.13, z = 0.1 },
+							 rotation = { x = -150.0, y = 15.0, z = -18.0 },
+                         }
+                     }, function(status)
+                         if not status then
+                            TriggerServerEvent("frog:removepreprocessed")
+							TriggerServerEvent("frog:getcookedfrog")
+                         end
+                     end)
 			else
 			isProcessing = false
 			cooking_pot = true
@@ -183,17 +245,18 @@ end)
 
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(15)
+        Citizen.Wait(0)
 
         local playerCoords = GetEntityCoords(PlayerPedId(source), true)
 		local playerPos = GetEntityCoords(player)
 		local targetPos = Config.FrogFarm.Routes[1].FrogFinishProcess[1]
 
 		
-		DrawMarker(24, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 1.0, 1.0, 1.0, 13, 232, 255, 155, 1, 1, 2, 0, 0, 0, 0)
+		
 
-        if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < 1.5 then
-            if IsControlPressed(0, 51) and not isProcessing then
+        if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToDraw then
+		DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 172, 125, 175, 0, 0, 2, 0, 0, 0, 0)
+			if IsControlPressed(0, 51) and not isProcessing then
 					isProcessing = true
 					
 					TaskStartScenarioInPlace(playerPed, Config.CookingAnimation, 0, false)
@@ -216,12 +279,32 @@ end)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 RegisterNetEvent('frog:EatFinishFrogDrug')
 AddEventHandler('frog:EatFinishFrogDrug', function()
   
   local playerPed = GetPlayerPed(-1)
   local playerPed = PlayerPedId()
-  
+ 
     RequestAnimSet("MOVE_M@QUICK") 
     while not HasAnimSetLoaded("MOVE_M@QUICK") do
       Citizen.Wait(0)
@@ -230,11 +313,8 @@ AddEventHandler('frog:EatFinishFrogDrug', function()
 							   ['type'] = "success",
 							   ['message'] = '~r~Was ist das denn?'
 })
-    
-		
 	TaskStartScenarioInPlace(playerPed, "PROP_HUMAN_PARKING_METER", 0, 1)
 	Citizen.Wait(2000)
-	
 	ClearPedTasksImmediately(playerPed)
 	TaskStartScenarioInPlace(playerPed, "WORLD_HUMAN_STRIP_WATCH_STAND", 0, 1)
     Citizen.Wait(2000)
@@ -253,7 +333,6 @@ AddEventHandler('frog:EatFinishFrogDrug', function()
     SetRunSprintMultiplierForPlayer(PlayerId(),1.49)
     AnimpostfxPlay("DrugsMichaelAliensFight", 10000001, true)
     ShakeGameplayCam("DEATH_FAIL_IN_EFFECT_SHAKE", 1.3)
-	
     Citizen.Wait(5000)
 -- after wait stop all 
     SetPedMoveRateOverride(PlayerId(),1.0)

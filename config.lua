@@ -37,7 +37,7 @@ Config.ProcessItems = {
   "nothing",
 }
 
-
+Config.DistanceToDraw = 1.5
 
 --Random Drop rate on Process
 Config.Processlootmin = 5
@@ -52,7 +52,7 @@ Config.RemoveCookedFrog = 1
 Config.CookingAnimation = 'PROP_HUMAN_BBQ'
 Config.Animation = 'WORLD_HUMAN_BUM_WASH'
 Config.ProcessAnimation = 'PROP_HUMAN_BUM_BIN'
-Config.PickupTime = '4000'
+Config.PickupTime = '6000'
 
 Config.FrogFarm = {
   Routes = {
@@ -61,17 +61,11 @@ Config.FrogFarm = {
       {x = -2396.4287109375, y = 2649.064453125, z = 0.81300586462021},
 	 },
 	FrogProcess = {
-	  {x = 1786.991142578, y = 3892.5724902344, z = 34.384990692139},
+	  {x = 1582.3189697266, y = 3619.7448730469, z = 38.775211334229},
 	 },  	 
 	FrogCook1 = {
 	  {x = 2557.6552734375, y = 4283.966796875, z = 41.616443634033},
-	 },  	 
-	FrogCook2 = {
-	  {x = 97.427101135254, y = 3684.1848144531, z = 39.712333679199},
-	 },  	 
-	FrogCook3 = {
-	  {x = 174.72912597656, y = -1202.2397460938, z = 29.295093536377},
-	  },  	 
+	 },  	 	 
 	FrogFinishProcess = {
 	  {x = 1443.2707519531, y = 6331.8100585938, z = 23.981914520264},
 }	  
