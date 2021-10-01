@@ -217,13 +217,13 @@ Citizen.CreateThread(function()
                              disableCombat = true,
                          },
                          animation = {
-                            animDict = "amb@world_human_bum_wash@male@low@idle_a",
-                             anim = "idle_a",
+                            animDict = "anim@amb@clubhouse@bar@drink@idle_a",
+                             anim = "idle_a_bartender",
                          },
                          prop = {
                              model = "prop_kitch_pot_huge",
-							 coords = { x = 0.2, y = -0.13, z = 0.1 },
-							 rotation = { x = -150.0, y = 15.0, z = -18.0 },
+							 coords = { x = -0.02, y = 0.11, z = -0.11 },
+							 rotation = { x = 11.0, y = 15.0, z = -18.0 },
                          }
                      }, function(status)
                          if not status then
@@ -259,13 +259,54 @@ Citizen.CreateThread(function()
 			if IsControlPressed(0, 51) and not isProcessing then
 					isProcessing = true
 					
-					TaskStartScenarioInPlace(playerPed, Config.CookingAnimation, 0, false)
-					Citizen.Wait(Config.PickupTime)
-					TriggerServerEvent("frog:removecookedfrog")
-					Citizen.Wait(0)
-					TriggerServerEvent("frog:getfinishfrogdrug")
-						Citizen.Wait(Config.PickupTime)
-						ClearPedTasks(playerPed)
+
+					TriggerEvent("mythic_progbar:client:progress", {
+                         name = "unique_action_name",
+                         duration = Config.PickupTime,
+                         label = 'Du Verarbeitest Das Hautsekret zu Bufotenin',
+                         useWhileDead = false,
+                         canCancel = true,
+                         controlDisables = {
+                             disableMovement = true,
+                             disableCarMovement = true,
+                             disableMouse = false,
+                             disableCombat = true,
+                         },
+                         animation = {
+                            animDict = "anim@amb@clubhouse@bar@drink@idle_a",
+                             anim = "idle_a_bartender",
+                         },
+                         prop = {
+                             model = "prop_kitch_pot_huge",
+							 coords = { x = -0.02, y = 0.11, z = -0.11 },
+							 rotation = { x = 11.0, y = 15.0, z = -18.0 },
+                         }
+                     }, function(status)
+                         if not status then
+                            TriggerServerEvent("frog:removepreprocessed")
+							TriggerServerEvent("frog:getfinishfrogdrug")
+                         end
+                     end)
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					
+					--TaskStartScenarioInPlace(playerPed, Config.CookingAnimation, 0, false)
+					--Citizen.Wait(Config.PickupTime)
+					----TriggerServerEvent("frog:removecookedfrog")
+					--Citizen.Wait(0)
+					--TriggerServerEvent("frog:getfinishfrogdrug")
+					--	Citizen.Wait(Config.PickupTime)
+					--	ClearPedTasks(playerPed)
 							   
 			else
 			isProcessing = false

@@ -76,27 +76,38 @@ AddEventHandler('frog:getcookedfrog', function()
   xPlayer.addInventoryItem('frog_cooked', frogcooked)
 end)
 
-
-RegisterServerEvent('frog:removecookedfrog')
-AddEventHandler('frog:removecookedfrog', function()
-  local xPlayer = ESX.GetPlayerFromId(source)
-  xPlayer.removeInventoryItem('frog_cooked', removefrogcookedfrog)
-  
-end)
-
 RegisterServerEvent('frog:getfinishfrogdrug')
 AddEventHandler('frog:getfinishfrogdrug', function()
   local xPlayer = ESX.GetPlayerFromId(source)
   
+  if (xPlayer.canCarryItem('frog_drug', '1')) then
+  xPlayer.removeInventoryItem('frog_cooked', removefrogcookedfrog)
   xPlayer.addInventoryItem('frog_drug', finishfrogdrug)
+  
+  
+  xPlayer.showNotification("Du Bekommst Kröten Bufotenin")
+   else
+  xPlayer.showNotification("Dein Inventar ist voll! Schmeiße etwas weg.")
+  end
+ 
 end)
 
+ESX.RegisterUsableItem('frog_bone', function(source)
+    local _source = source
+	local xPlayer = ESX.GetPlayerFromId(source)
+	xPlayer.removeInventoryItem('frog_bone', 1)
+	
+	TriggerClientEvent('esx_status:set', source, 'thirst', 200)
+	TriggerClientEvent('esx_status:set', source, 'hunger', 200)
+	TriggerClientEvent('esx_basicneeds:onEat', source)
+	xPlayer.showNotification(_U('used_frog_bone'))
+end)
 
 ESX.RegisterUsableItem('frog_drug', function(source)
         
     local _source = source
-local xPlayer = ESX.GetPlayerFromId(_source)
-xPlayer.removeInventoryItem('frog_drug', 1)
+	local xPlayer = ESX.GetPlayerFromId(_source)
+	xPlayer.removeInventoryItem('frog_drug', 1)
 
-TriggerClientEvent('frog:EatFinishFrogDrug', source)
+	TriggerClientEvent('frog:EatFinishFrogDrug', source)
 end)
