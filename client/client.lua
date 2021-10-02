@@ -97,8 +97,9 @@ Citizen.CreateThread(function()
 			ShowPedHelpDialog(_U('start_farming'))
 			else
 			Citizen.Wait(500)
-end
-
+            end
+            end
+    end)
 
 Citizen.CreateThread(function()
     while true do
