@@ -85,6 +85,20 @@ Citizen.CreateThread(function()
     end
 end)
 
+Citizen.CreateThread(function()
+    while true do
+        Citizen.Wait(0)
+
+        local playerCoords = GetEntityCoords(PlayerPedId(-1), true)
+		local playerPos = GetEntityCoords(player)
+		local targetPos = Config.FrogFarm.Routes[1].FrogPickup[1]
+		
+		 if DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 232, 155, 155, 0, 0, 2, 0, 0, 0, 0) < Config.DistanceToPickup then
+			ShowPedHelpDialog(_U('start_farming'))
+			else
+			Citizen.Wait(500)
+end
+
 
 Citizen.CreateThread(function()
     while true do
@@ -96,7 +110,7 @@ Citizen.CreateThread(function()
 
 		
         if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToDraw then
-		DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 232, 155, 155, 0, 0, 2, 0, 0, 0, 0)
+		
             if IsControlPressed(0, 51) and not isPickingUp then
 			
 					isPickingUp = true
@@ -130,8 +144,9 @@ Citizen.CreateThread(function()
                      end)
             else
 			isPickingUp = false
-			ShowPedHelpDialog(_U('start_farming'))
+			
         end
+		end
         end
 		end
 end)

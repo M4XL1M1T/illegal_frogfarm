@@ -38,6 +38,7 @@ Config.ProcessItems = {
 }
 
 Config.DistanceToDraw = 1.5
+Config.DistanceToPickup = 5.0
 
 --Random Drop rate on Process
 Config.Processlootmin = 5
