@@ -24,17 +24,6 @@ function RandomNumber2()
 	return math.random(catchlootmin,catchlootmax)
 end
 
---Get items from Pickup
-RegisterServerEvent('frog:Catchloot')
-AddEventHandler('frog:Catchloot', function()
-  local xPlayer = ESX.GetPlayerFromId(source)
-  math.randomseed(GetGameTimer())
-  
-  xPlayer.addInventoryItem(RandomItem2(), RandomNumber2())
-  
-end)
-
-
 function RandomItem()
   return Config.ProcessItems[math.random(#Config.ProcessItems)]
 end
@@ -43,38 +32,45 @@ function RandomNumber()
 	return math.random(processlootmin,processlootmax)
 end
 
+
+
+--Get items from Pickup
+RegisterServerEvent('frog:Catchloot')
+AddEventHandler('frog:Catchloot', function()
+  local xPlayer = ESX.GetPlayerFromId(source)
+  local itemcount = Config.Catchlootmax
+
+  math.randomseed(GetGameTimer())
+  
+  if (xPlayer.canCarryItem('frog_pet', itemcount)) then
+    xPlayer.addInventoryItem(RandomItem2(), RandomNumber2())
+  else
+    xPlayer.showNotification('Du hast kein Platz im Inventar!')
+  end
+end)
+
 --Get items from Pre Processing
 RegisterServerEvent('frog:Processloot')
 AddEventHandler('frog:Processloot', function()
   local xPlayer = ESX.GetPlayerFromId(source)
+  local item = xPlayer.getInventoryItem('frog_pet')
   math.randomseed(GetGameTimer())
-  
-  xPlayer.addInventoryItem(RandomItem(), RandomNumber())
-  
-end)
 
---Remove frog from inventory on pre process
-RegisterServerEvent('frog:removefrog')
-AddEventHandler('frog:removefrog', function()
-  local xPlayer = ESX.GetPlayerFromId(source)
-  
-  xPlayer.removeInventoryItem('frog_pet', removefroginv)
-  
+  if item.count > 1 then
+    xPlayer.addInventoryItem(RandomItem(), RandomNumber())
+    xPlayer.removeInventoryItem('frog_pet', removefroginv)
+  else
+    xPlayer.showNotification('Du hast keine Kröte im Inventar!')
+  end
 end)
 
 RegisterServerEvent('frog:removepreprocessed')
 AddEventHandler('frog:removepreprocessed', function()
   local xPlayer = ESX.GetPlayerFromId(source)
   xPlayer.removeInventoryItem('frog_preprocessed', removefrogpreprocessed)
-  
-end)
-
-RegisterServerEvent('frog:getcookedfrog')
-AddEventHandler('frog:getcookedfrog', function()
-  local xPlayer = ESX.GetPlayerFromId(source)
-  
   xPlayer.addInventoryItem('frog_cooked', frogcooked)
 end)
+
 
 RegisterServerEvent('frog:getfinishfrogdrug')
 AddEventHandler('frog:getfinishfrogdrug', function()
@@ -91,6 +87,9 @@ AddEventHandler('frog:getfinishfrogdrug', function()
   end
  
 end)
+
+
+
 
 ESX.RegisterUsableItem('frog_bone', function(source)
     local _source = source

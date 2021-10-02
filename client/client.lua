@@ -7,9 +7,6 @@ local isProcessing = false
 local cooking_pot = false
 
 
-
-
-
 AddEventHandler('playerSpawned', function()
     Citizen.CreateThread(function()
         while ESX == nil do
@@ -85,25 +82,21 @@ Citizen.CreateThread(function()
     end
 end)
 
+--Citizen.CreateThread(function()
+  --while true do
+    --Citizen.Wait(0)
+    --local targetPos = Config.FrogFarm.Routes[1].FrogPickup[1]
+    
+   --  if DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 232, 155, 155, 0, 0, 2, 0, 0, 0, 0) > Config.DistanceToDraw then
+     --   end
+   --end
+--end)
+
+
+--PICKUP FROG
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(0)
-
-        local playerCoords = GetEntityCoords(PlayerPedId(-1), true)
-		local playerPos = GetEntityCoords(player)
-		local targetPos = Config.FrogFarm.Routes[1].FrogPickup[1]
-		
-		 if DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 232, 155, 155, 0, 0, 2, 0, 0, 0, 0) < Config.DistanceToPickup then
-			ShowPedHelpDialog(_U('start_farming'))
-			else
-			Citizen.Wait(500)
-            end
-            end
-    end)
-
-Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(0)
+        Citizen.Wait(10)
 
         local playerCoords = GetEntityCoords(PlayerPedId(-1), true)
 		local playerPos = GetEntityCoords(player)
@@ -111,9 +104,8 @@ Citizen.CreateThread(function()
 
 		
         if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToDraw then
-		
+		DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 232, 155, 155, 0, 0, 2, 0, 0, 0, 0)
             if IsControlPressed(0, 51) and not isPickingUp then
-			
 					isPickingUp = true
 						
 						TriggerEvent("mythic_progbar:client:progress", {
@@ -140,38 +132,36 @@ Citizen.CreateThread(function()
                      }, function(status)
                          if not status then
                             TriggerServerEvent("frog:Catchloot")
+                            Citizen.Wait(700)
 							isPickingUp = false
                          end
                      end)
             else
-			isPickingUp = false
-			
+			ShowPedHelpDialog(_U('start_farming'))
         end
-		end
         end
 		end
 end)
 
 
 
+--PRE PROCESS THE FROG
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
 
-        local playerCoords = GetEntityCoords(PlayerPedId(), true)
-		local playerPos = GetEntityCoords(player)
 		local targetPos = Config.FrogFarm.Routes[1].FrogProcess[1]
 		
 		
         if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToDraw then
 		DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 132, 155, 155, 0, 0, 2, 0, 0, 0, 0)
             if IsControlPressed(0, 51) and not isProcessing then
-					isProcessing = true
+                isProcessing = true
 					
 					
 	                 	TriggerEvent("mythic_progbar:client:progress", {
                          name = "unique_action_name",
-                         duration = Config.PickupTime,
+                         duration = Config.ProcessTime,
                          label = 'Du Verarbeitest gerade einen Frosch',
                          useWhileDead = false,
                          canCancel = true,
@@ -192,13 +182,13 @@ Citizen.CreateThread(function()
                          }
                      }, function(status)
                          if not status then
-                             TriggerServerEvent("frog:removefrog")
 							 TriggerServerEvent("frog:Processloot")
+                             Citizen.Wait(700)
+                             isProcessing = false
                          end
                      end)
 				   
             else
-			isProcessing = false
 			ShowPedHelpDialog(_U('start_process'))
         end
         end
@@ -210,15 +200,12 @@ end)
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
-
-        local playerCoords = GetEntityCoords(PlayerPedId(source), true)
-		local playerPos = GetEntityCoords(player)
 		local targetPos = Config.FrogFarm.Routes[1].FrogCook1[1]
 		
         if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToDraw then
 		DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 112, 115, 155, 0, 0, 2, 0, 0, 0, 0)
             if IsControlPressed(0, 51) and not isProcessing and cooking_pot then
-					isProcessing = true
+                isProcessing = true
 					
 					TriggerEvent("mythic_progbar:client:progress", {
                          name = "unique_action_name",
@@ -245,6 +232,8 @@ Citizen.CreateThread(function()
                          if not status then
                             TriggerServerEvent("frog:removepreprocessed")
 							TriggerServerEvent("frog:getcookedfrog")
+                            Citizen.Wait(700)
+                            isProcessing = false
                          end
                      end)
 			else
@@ -263,8 +252,6 @@ Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
 
-        local playerCoords = GetEntityCoords(PlayerPedId(source), true)
-		local playerPos = GetEntityCoords(player)
 		local targetPos = Config.FrogFarm.Routes[1].FrogFinishProcess[1]
 
 		
@@ -272,8 +259,8 @@ Citizen.CreateThread(function()
 
         if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToDraw then
 		DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 172, 125, 175, 0, 0, 2, 0, 0, 0, 0)
-			if IsControlPressed(0, 51) and not isProcessing then
-					isProcessing = true
+			if IsControlPressed(0, 51) and not isProcessing then	
+                isProcessing = true
 					
 
 					TriggerEvent("mythic_progbar:client:progress", {
@@ -301,6 +288,8 @@ Citizen.CreateThread(function()
                          if not status then
                             TriggerServerEvent("frog:removepreprocessed")
 							TriggerServerEvent("frog:getfinishfrogdrug")
+                            Citizen.Wait(700)
+                            isProcessing = false
                          end
                      end)
 					

@@ -19,7 +19,6 @@ Config.CatchItems = {
   "frog_pet",
   "fish_raw",
   "earthworm",
-  "nothing",
 }
 
 --Random Drop rate on Catch
@@ -34,11 +33,10 @@ Config.ProcessItems = {
   "frog_preprocessed",
   "frog_bone",
   "frog_guts",
-  "nothing",
 }
 
-Config.DistanceToDraw = 1.5
-Config.DistanceToPickup = 5.0
+Config.DistanceToDraw = 5.5
+Config.DistanceToPickup = 1.0
 
 --Random Drop rate on Process
 Config.Processlootmin = 5
@@ -53,12 +51,14 @@ Config.RemoveCookedFrog = 1
 Config.CookingAnimation = 'PROP_HUMAN_BBQ'
 Config.Animation = 'WORLD_HUMAN_BUM_WASH'
 Config.ProcessAnimation = 'PROP_HUMAN_BUM_BIN'
-Config.PickupTime = '6000'
+Config.PickupTime = '1000'
+Config.ProcessTime = '1000'
+
 
 Config.FrogFarm = {
   Routes = {
   {
-    FrogPickup = {
+  FrogPickup = {
       {x = -2396.4287109375, y = 2649.064453125, z = 0.81300586462021},
 	 },
 	FrogProcess = {
