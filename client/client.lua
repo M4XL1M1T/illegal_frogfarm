@@ -5,7 +5,7 @@ local playerPed = PlayerPedId()
 local isPickingUp = false
 local isProcessing = false
 local cooking_pot = false
-
+local ModelSpawned = false
 
 AddEventHandler('playerSpawned', function()
     Citizen.CreateThread(function()
@@ -24,73 +24,86 @@ Citizen.CreateThread(function()
     end
 end)
 
+local menu = MenuV:CreateMenu(false, 'Kröten Händler', 'bottomright', 0, 153, 0, 'size-150', 'default', 'menuv', 'example_namespace')
+MenuV:CloseMenu(menu, function()
+    print('Menu closed :(')
+  end)
+
+
+local confirm = menu:AddConfirm({ icon = '💊', label = 'Möchstest du die Bufotenin Kröten Verkaufen?', value = 'no' })
+
+confirm:On('confirm', function(item) 
+        ESX.ShowAdvancedNotification('Verkauft', '', 'Jo man! Danke für die Kröten, Hier ist Dein Schwarzgeld', 'CHAR_LESTER_DEATHWISH', 9, true, false, 210)
+        UnregisterPedheadshot(mugshot)
+        TriggerServerEvent("frog:sell")
+        menu:Close()
+end)
+
+confirm:On('deny', function(item)
+    ESX.ShowAdvancedNotification('Abgelehnt', '', 'Wenn du es dir anders überlegst komm einfach wieder.', 'CHAR_BLOCKED', 7, true, false, 130)
+    UnregisterPedheadshot(mugshot)
+    menu:Close()
+end)
+
+
+local Hookers = {
+	{id = 1, VoiceName = "HOOKER_LEAVES_ANGRY", 
+}}
 
 Citizen.CreateThread(function()
-    for _, v in ipairs(Config.FrogFarm.Routes) do
-        for key, _v in ipairs(v.FrogPickup) do
-			blip = CreateCustomBlip(
-			_v,
-            Config.Blip['sprite'],
-            Config.Blip['display'],
-            Config.Blip['scale'],
-            Config.Blip['color'],
-            Config.Blip['alpha'],
-            Config.Blip['friend'],
-            Config.Blip['short'],
-            Config.Blip['name'],
-			'TEST'
-			)
+  while true do
+    Citizen.Wait(5000)
+	if (not ModelSpawned) then
+	  for i=1, #Hookers do
+		RequestModel(GetHashKey(Config.NpcTyp))
+        while not HasModelLoaded(GetHashKey(Config.NpcTyp)) do
+          Citizen.Wait(0)
         end
+		SpawnedPed = CreatePed(1, Config.NpcTyp, Config.blips[7].x, Config.blips[7].y, Config.blips[7].z, Config.blips[7].heading, true, true)
+		FreezeEntityPosition(SpawnedPed, true)
+		SetEntityInvincible(SpawnedPed, true)
+		ModelSpawned = true
+		TaskSetBlockingOfNonTemporaryEvents(SpawnedPed, true)
+		Citizen.Wait(0)
+		TaskStartScenarioInPlace(SpawnedPed, Config.NpcAnimation, 1, false)
+
+	end
     end
+	end
 end)
 
 Citizen.CreateThread(function()
-    for _, v in ipairs(Config.FrogFarm.Routes) do
-        for key, _v in ipairs(v.FrogProcess) do
-			blip = CreateCustomBlip(
-			_v,
-            Config.Blip['sprite'],
-            Config.Blip['display'],
-            Config.Blip['scale'],
-            Config.Blip['color'],
-            Config.Blip['alpha'],
-            Config.Blip['friend'],
-            Config.Blip['short'],
-            Config.Blip['name'],
-			'TEST'
-			)
-        end
-    end
-end)
+while true do
+    --HIER GUCKEN
+  Citizen.Wait(0)
+	local v2 = Config.blips[5]
+	local pedCoords = GetEntityCoords(PlayerPedId(-1), true)
+    local v3 = Config.blips[6]
+
+  if (Vdist(pedCoords.x,pedCoords.y,pedCoords.z, v2.x,v2.y,v2.z) < 2) then
+			ShowPedHelpDialog(_U('drug_sell'))
+           DrawCustomMarker(32, v3, false, 0.4, 0.4, 0.3, true, true)
+           menu:OpenWith('KEYBOARD', 'e') -- Press F1 to open Menu
+  else
+    menu:Close()
+  end
+  end
+  end)
+  
 
 Citizen.CreateThread(function()
-    for _, v in ipairs(Config.FrogFarm.Routes) do
-        for key, _v in ipairs(v.FrogCook1) do
-			blip = CreateCustomBlip(
-			_v,
-            Config.Blip['sprite'],
-            Config.Blip['display'],
-            Config.Blip['scale'],
-            Config.Blip['color'],
-            Config.Blip['alpha'],
-            Config.Blip['friend'],
-            Config.Blip['short'],
-            Config.Blip['name'],
-			'TEST'
-			)
-        end
-    end
+while true do
+  Citizen.Wait(0)
+  local v = Config.blips
+  local  pedCoords = GetEntityCoords(PlayerPedId(-1), true)
+  
+   if (Vdist(pedCoords.x,pedCoords.y,pedCoords.z, v.x,v.y,v.z) < Config.DistanceToDraw) then
+            DrawCustomMarker(31, v, false, 0.4, 0.4, 0.3, true, true)	 
+   else
+    Citizen.Wait(5000) 
+       end
+ end
 end)
-
---Citizen.CreateThread(function()
-  --while true do
-    --Citizen.Wait(0)
-    --local targetPos = Config.FrogFarm.Routes[1].FrogPickup[1]
-    
-   --  if DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 232, 155, 155, 0, 0, 2, 0, 0, 0, 0) > Config.DistanceToDraw then
-     --   end
-   --end
---end)
 
 
 --PICKUP FROG
@@ -100,11 +113,10 @@ Citizen.CreateThread(function()
 
         local playerCoords = GetEntityCoords(PlayerPedId(-1), true)
 		local playerPos = GetEntityCoords(player)
-		local targetPos = Config.FrogFarm.Routes[1].FrogPickup[1]
+		local targetPos = Config.blips[1]
 
 		
-        if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToDraw then
-		DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 232, 155, 155, 0, 0, 2, 0, 0, 0, 0)
+        if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToPickup then
             if IsControlPressed(0, 51) and not isPickingUp then
 					isPickingUp = true
 						
@@ -148,12 +160,12 @@ end)
 --PRE PROCESS THE FROG
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(0)
+        Citizen.Wait(10)
 
-		local targetPos = Config.FrogFarm.Routes[1].FrogProcess[1]
+		local targetPos = Config.blips[2]
 		
 		
-        if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToDraw then
+        if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToPickup then
 		DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 132, 155, 155, 0, 0, 2, 0, 0, 0, 0)
             if IsControlPressed(0, 51) and not isProcessing then
                 isProcessing = true
@@ -187,7 +199,6 @@ Citizen.CreateThread(function()
                              isProcessing = false
                          end
                      end)
-				   
             else
 			ShowPedHelpDialog(_U('start_process'))
         end
@@ -199,10 +210,10 @@ end)
 
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(0)
-		local targetPos = Config.FrogFarm.Routes[1].FrogCook1[1]
+        Citizen.Wait(10)
+		local targetPos = Config.blips[3]
 		
-        if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToDraw then
+        if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToPickup then
 		DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 112, 115, 155, 0, 0, 2, 0, 0, 0, 0)
             if IsControlPressed(0, 51) and not isProcessing and cooking_pot then
                 isProcessing = true
@@ -230,12 +241,11 @@ Citizen.CreateThread(function()
                          }
                      }, function(status)
                          if not status then
-                            TriggerServerEvent("frog:removepreprocessed")
 							TriggerServerEvent("frog:getcookedfrog")
                             Citizen.Wait(700)
                             isProcessing = false
                          end
-                     end)
+                     end) 
 			else
 			isProcessing = false
 			cooking_pot = true
@@ -250,14 +260,11 @@ end)
 
 Citizen.CreateThread(function()
     while true do
-        Citizen.Wait(0)
+        Citizen.Wait(10)
 
-		local targetPos = Config.FrogFarm.Routes[1].FrogFinishProcess[1]
+		local targetPos = Config.blips[4]
 
-		
-		
-
-        if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToDraw then
+        if GetDistanceBetweenCoords(GetEntityCoords(playerPed), targetPos.x, targetPos.y, targetPos.z, true) < Config.DistanceToPickup then
 		DrawMarker(31, targetPos.x, targetPos.y, targetPos.z, 0, 0, 0, 0, 0, 0, 0.4, 0.4, 0.4, 13, 172, 125, 175, 0, 0, 2, 0, 0, 0, 0)
 			if IsControlPressed(0, 51) and not isProcessing then	
                 isProcessing = true
@@ -292,27 +299,6 @@ Citizen.CreateThread(function()
                             isProcessing = false
                          end
                      end)
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					
-					--TaskStartScenarioInPlace(playerPed, Config.CookingAnimation, 0, false)
-					--Citizen.Wait(Config.PickupTime)
-					----TriggerServerEvent("frog:removecookedfrog")
-					--Citizen.Wait(0)
-					--TriggerServerEvent("frog:getfinishfrogdrug")
-					--	Citizen.Wait(Config.PickupTime)
-					--	ClearPedTasks(playerPed)
-							   
 			else
 			isProcessing = false
 			ShowPedHelpDialog(_U('getdrugfrog'))

@@ -7,10 +7,13 @@ version '1.0'
 
 client_scripts {
     '@es_extended/locale.lua',
+	'@menuv/menuv.lua',
     'client/client.lua',
+	'client/blips.lua',
 	'locale/de.lua',
 	'config.lua',
 	'@cr1tika7_utils/client_utils.lua',
+	
 }
 
 server_scripts {

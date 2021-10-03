@@ -64,13 +64,19 @@ AddEventHandler('frog:Processloot', function()
   end
 end)
 
-RegisterServerEvent('frog:removepreprocessed')
-AddEventHandler('frog:removepreprocessed', function()
+RegisterServerEvent('frog:getcookedfrog')
+AddEventHandler('frog:getcookedfrog', function()
   local xPlayer = ESX.GetPlayerFromId(source)
-  xPlayer.removeInventoryItem('frog_preprocessed', removefrogpreprocessed)
-  xPlayer.addInventoryItem('frog_cooked', frogcooked)
+  
+  if (xPlayer.canCarryItem('frog_cooked', Config.Catchlootmax)) then
+  xPlayer.removeInventoryItem('frog_preprocessed', '1')
+  xPlayer.addInventoryItem('frog_cooked', finishfrogdrug)
+  xPlayer.showNotification("Du Bekommst Kröten Hautsekret")
+   else
+  xPlayer.showNotification("Dein Inventar ist voll! Schmeiße etwas weg.")
+  end
+ 
 end)
-
 
 RegisterServerEvent('frog:getfinishfrogdrug')
 AddEventHandler('frog:getfinishfrogdrug', function()
@@ -79,13 +85,27 @@ AddEventHandler('frog:getfinishfrogdrug', function()
   if (xPlayer.canCarryItem('frog_drug', '1')) then
   xPlayer.removeInventoryItem('frog_cooked', removefrogcookedfrog)
   xPlayer.addInventoryItem('frog_drug', finishfrogdrug)
-  
-  
   xPlayer.showNotification("Du Bekommst Kröten Bufotenin")
    else
   xPlayer.showNotification("Dein Inventar ist voll! Schmeiße etwas weg.")
   end
  
+end)
+
+
+RegisterServerEvent('frog:sell')
+AddEventHandler('frog:sell', function()
+  local xPlayer = ESX.GetPlayerFromId(source)
+  local item = xPlayer.getInventoryItem('frog_drug')
+  local money = Config.Blackmoney * item.count
+
+  if item.count > 1 then
+    xPlayer.removeInventoryItem('frog_drug', item.count)
+    xPlayer.addAccountMoney('black_money', money)
+    xPlayer.showNotification('Du Bekommst ' ..  money .. ' $ Schwarzgeld' .. ' Für ' .. item.count .. ' Kröten')
+  else
+    xPlayer.showNotification('Du hast keine Kröten im Inventar!')
+  end
 end)
 
 

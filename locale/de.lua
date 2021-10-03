@@ -5,4 +5,6 @@ Locales['de'] = {
   ['getdrugfrog'] =   'Drücke ~INPUT_CONTEXT~ und mach dir einen ~b~Bufotenin Drink',
   ['farming_noluck'] = '~r~Der Frosch war Feucht und Glatt und ist Dir aus der Hand Geflutscht :(',
   ['pet_process'] = 'Verarbeite Den Frosch',
+  ['drug_sell'] = '~g~Drücke  ~INPUT_CONTEXT~ ~s~um Das ~y~Bufotenin ~s~zu verticken',
+ 
   }
