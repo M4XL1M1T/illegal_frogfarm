@@ -15,6 +15,7 @@ Farm Frogs, Skin the frogs, Cook them and Eat it! or just sell them ^^
 - esx legacy or above
 - mythic_progbar
 - cr1tika7_utils
+- - https://github.com/ThymonA/menuv
 
 ## Usage:
 - configure the job as you need it, over 85% of the job is adjustable.
