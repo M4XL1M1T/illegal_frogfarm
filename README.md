@@ -23,5 +23,5 @@ Farm Frogs, Skin the frogs, Cook them and Eat it! or just sell them ^^
 #### Known Bugs:
 when you start the server, you need to restart the script...
 
-#### How it looks: 
+#### some pictures 
 https://imgur.com/a/COd3eXj
