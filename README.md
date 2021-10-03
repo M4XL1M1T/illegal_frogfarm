@@ -9,7 +9,7 @@ Farm Frogs, Skin the frogs, Cook them and Eat it! or just sell them ^^
 - Download and Copy the folder into the 'resources/esx' folder of your server and remove '-master'
 - move mythic_progbar in 'Resources' folder
 - edit your server.cfg and put after es_extended 'ensure illegal_frogfarm'
-- import item.sql in mysql
+- import item.sql
 
 ## Despendency
 - esx legacy or above
