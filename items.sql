@@ -11,16 +11,6 @@ INSERT INTO `items` (`name`, `label`, `weight`, `rare`, `can_remove`) VALUES
 ('frog_preprocessed', 'Sezierte Kröte', 1, 0, 1),
 
 --
--- Indizes der exportierten Tabellen
---
-
---
--- Indizes für die Tabelle `items`
---
 ALTER TABLE `items`
   ADD PRIMARY KEY (`name`);
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
